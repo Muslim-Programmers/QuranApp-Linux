@@ -24,3 +24,4 @@ Quran app is an easy to use quran reader with support for translation in multipl
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`
+![](https://cdn.discordapp.com/attachments/802126045804232704/802132543612780594/unknown.png)

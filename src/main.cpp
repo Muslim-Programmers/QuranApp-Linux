@@ -32,9 +32,9 @@
 #include <cstdio>
 #include "parser.hpp"
 #include "interface.hpp"
-#include "translations.hpp"
 #include "audio_stream.hpp"
 #include "window.hpp"
+#include "translations.hpp"
 
 void help_menu();
 int check_option(int argc, char *argv[], int x);
@@ -45,10 +45,11 @@ void process_option(int argc, char *argv[], int x);
 int main(int argc, char *argv[])
 {
     QApplication qapp(argc, argv);
-    Window window;
+    Window *window;
     if(argc == 1)
     {
-        window.show();
+        window = new Window();
+        window->show();
         std::cout << "\n\033[1;31m No arguments provided , use '--h' for help menu \033[0m" << std::endl;
     }
     else
@@ -99,21 +100,21 @@ void help_menu()
 
 int check_option(int argc, char *argv[], int x)
 {
-    if(argv[x][2] == 'r' && argc >= 3) // --o
+    if(argv[x][2] == 'r' && argc >= 3) // --r
     {    
         process_option(argc,argv,x);
     }
-    else if(argv[x][2] == 'h')
+    else if(argv[x][2] == 'h') // --h
     {
         help_menu();
         exit(0);
     }
-    else if(argv[x][2] == 't')
+    else if(argv[x][2] == 't') // --t
     {
         tr_help();
         exit(0);
     }
-    else if(argv[x][2] == 's')
+    else if(argv[x][2] == 's') // --s
     {
         std::string url_surah = "https://api.alquran.cloud/v1/surah/";
         if(isSurah(argv[x+1]))

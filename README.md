@@ -22,6 +22,10 @@ Quran app is an easy to use quran reader with support for translation in multipl
 4. run `make` , it will compile the program
 5. run the program `./qapp --h`
 
+if you run the program without any arguements it will open new window ( feature still under developement).
+
+quran streaming only available in CLI mode now.
+
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`
 ![](https://cdn.discordapp.com/attachments/802126045804232704/802132543612780594/unknown.png)

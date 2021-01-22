@@ -9,7 +9,6 @@ Quran app is an easy to use quran reader with support for translation in multipl
 
 `libcurl4-openssl-dev , qt5-default, nlohmann json, libpmg123-dev, libao-dev`
 * libcurl installation = `sudo apt install libcurl4-openssl-dev`
-* nlohmann json = https://github.com/nlohmann/json/releases , Download the latest release and put it in the source folder . Make sure header name is json.hpp
 * Qt5 = `sudo apt install qt5-default`
 * libmpg123 installation = `sudo apt install libmpg123-dev libmpg123-0`
 * libao installation = `sudo apt install libao-dev libao4`
@@ -28,4 +27,6 @@ quran streaming only available in CLI mode now.
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`
+
+
 ![](https://cdn.discordapp.com/attachments/802126045804232704/802132543612780594/unknown.png)

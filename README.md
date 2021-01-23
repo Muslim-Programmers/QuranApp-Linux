@@ -22,7 +22,7 @@ Quran app is an easy to use quran reader with support for translation in multipl
 5. run `cd .. && sudo ./install.sh`
 6. Open the app from application menu 
 
-quran streaming only available in CLI mode now.
+Quran streaming only available in CLI mode now. Open terminal and type `qapp --h` to show help menu. 
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`

@@ -5,6 +5,8 @@
 
 Quran app is an easy to use quran reader with support for translation in multiple languages and stream beautiful quran recitation . Made with Qt5 .
 
+This Project uses [nlohmann json](https://github.com/nlohmann/json) for json parsing .
+
 **Dependencies**
 
 `libcurl4-openssl-dev , qt5-default, nlohmann json, libpmg123-dev, libao-dev`

@@ -11,14 +11,11 @@ set(CMAKE_AUTOUIC ON)
 set(SRCS
     src/main.cpp
     src/window.cpp
-    src/interface.cpp
     src/audio_stream.cpp
     src/parser.cpp
     src/window.hpp
-    src/interface.hpp
     src/audio_stream.hpp
     src/parser.hpp
-    src/translations.hpp
 )
 
 if(CMAKE_VERSION VERSION_LESS "3.7.0")

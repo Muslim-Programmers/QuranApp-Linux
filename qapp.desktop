@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Quran app
+Comment= Simple Quran reading app
+Exec=/usr/bin/qapp
+Terminal=false
+Type=Application
+Icon=/opt/Qapp/icon.png
+Categories=Education

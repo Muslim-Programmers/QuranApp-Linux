@@ -3,7 +3,7 @@
    * Description : an easy to use Quran Reading program in Qt5, supports translations in indian languages as well as quran audio streaming
    *               Specs :-  Multi-language , stream quran
    * Build-Dependencies : libcurl , qt5 libs, nlohmann json : https://github.com/nlohmann/json/ , libao-dev , libmpg123-dev
-   * Developer : Nashid P
+   * Developer : Nashid P , Member of Muslim Programmers Community
    * Project Status : stable
    *
    * Functions Description:-
@@ -25,16 +25,16 @@
    *    pass arguments and process them accordingly , show either surah or ayah
 ***/
 
-#include <QtWidgets/QApplication>
+#include <QApplication>
+#include <QSplashScreen>
+#include <QTimer>
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
 #include <cstdio>
 #include "parser.hpp"
-#include "interface.hpp"
 #include "audio_stream.hpp"
 #include "window.hpp"
-#include "translations.hpp"
 
 void help_menu();
 int check_option(int argc, char *argv[], int x);
@@ -46,11 +46,14 @@ int main(int argc, char *argv[])
 {
     QApplication qapp(argc, argv);
     Window *window;
+    QPixmap pixmap("/opt/Qapp/qapp-splash.jpg");
+    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
     if(argc == 1)
     {
-        window = new Window();
+        window = new Window;
+        splash.show();
+        QTimer::singleShot(3000, &splash, &QWidget::close);
         window->show();
-        std::cout << "\n\033[1;31m No arguments provided , use '--h' for help menu \033[0m" << std::endl;
     }
     else
     {
@@ -76,15 +79,6 @@ void help_menu()
 {
     std::cout << " Usage: qapp [OPT] [arg] " << std::endl;
     std::cout << " OPTions:- " << std::endl;
-    std::cout << "\t --r (Read): " << std::endl;
-    std::cout << "\t\t[arg]:- " <<std::endl;
-    std::cout << "\t\t\t[surah] for a complete surah or [surah]:[ayah] for a single ayah " << std::endl;
-    std::cout << "\t\t\t[surah] and [ayah] must be integer " << std::endl;
-    std::cout << "\t\t\t[surah] [translation] or [surah]:[ayah] [translation] , for translated version " << std::endl;
-    std::cout << "\t\t\tEg:- " << std::endl;
-    std::cout << "\t\t\t   qapp --r 1 , return surah Al-Fatiha without any translation " << std::endl;
-    std::cout << "\t\t\t   qapp --r 1:1 sahih , returns surah Al-Fatiha Verse 1 in saheeh international english translation" << std::endl;
-    std::cout << "\t\t\t   qapp --r 1 sahih , returns surah Al-Fatiha \n" << std::endl;
     std::cout << "\t --s (Stream): " << std::endl;
     std::cout << "\t\t[arg]:- " << std::endl;
     std::cout << "\t\t\t[surah] stream complete surah " << std::endl;
@@ -92,26 +86,13 @@ void help_menu()
     std::cout << "\t\t\t   qapp --s 1 , stream surah Al-Fatiha , recitation of Mishary Alafasy \n" << std::endl;
     std::cout << "\t --h (Help): " << std::endl;
     std::cout << "\t\t show this help menu and exit \n" << std::endl;
-    std::cout << "\t --t (Translations): " << std::endl;
-    std::cout << "\t\t List of available translations \n" << std::endl;
-    std::cout << "\t --l (List): " << std::endl;
-    std::cout << "\t\t List all surah and their number , number should be used as [surah] arg for other options " << std::endl;
 }
 
 int check_option(int argc, char *argv[], int x)
 {
-    if(argv[x][2] == 'r' && argc >= 3) // --r
-    {    
-        process_option(argc,argv,x);
-    }
-    else if(argv[x][2] == 'h') // --h
+    if(argv[x][2] == 'h') // --h
     {
         help_menu();
-        exit(0);
-    }
-    else if(argv[x][2] == 't') // --t
-    {
-        tr_help();
         exit(0);
     }
     else if(argv[x][2] == 's') // --s
@@ -136,65 +117,12 @@ int check_option(int argc, char *argv[], int x)
             }
         }
     }
-    else if(argv[x][2] == 'l')
-    {
-        std::string meta = "https://api.alquran.cloud/v1/meta";
-        GUI metadata(meta);
-        metadata.process_request(2);
-        exit(0);
-    } 
     else 
     {
         std::cout << "\033[1;31m Invalid option provided or insufficient arguements , use --h to show help menu \033[0m" << std::endl; 
         exit(0);
     }
     return x;
-}
-
-void process_option(int argc, char *argv[], int x)
-{
-    std::string url_ayah = "https://api.alquran.cloud/v1/ayah/";
-    std::string url_surah = "https://api.alquran.cloud/v1/surah/";
-    std::string edition = "quran-simple-enhanced";
-
-    if(isSurah(argv[x+1]))
-    {
-        if(!isInt(argv[x+1]))
-        {
-            std::cout << "\n [surah] must be an integer , provided value = " << argv[x+1] << std::endl;
-            exit(0);
-        } 
-        else 
-        {
-            if(argc == 4)
-            {
-                edition = return_edition(static_cast<std::string>(argv[x+2]));
-            }
-            url_surah.append(argv[x+1]);
-            url_surah.append("/"+edition);
-            GUI Surah_GUI(url_surah);
-            Surah_GUI.process_request(1);
-        }
-    } 
-    else 
-    {
-        if(!isInt(argv[x+1]))
-        {
-            std::cout << "\n\033[1;31m [surah] and [ayah] must be an integer , provided value = " << argv[x+1] << "\033[0m" << std::endl;
-            exit(0);
-        } 
-        else 
-        {
-            if(argc == 4)
-            {
-                edition = return_edition(static_cast<std::string>(argv[x+2]));
-            }
-            url_ayah.append(argv[x+1]);
-            url_ayah.append("/"+edition);
-            GUI Ayah_GUI(url_ayah);
-            Ayah_GUI.process_request(0);
-        }
-    }
 }
 
 bool isSurah(char *arg)

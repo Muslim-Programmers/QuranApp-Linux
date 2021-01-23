@@ -26,9 +26,11 @@ void Window::createMenu()
 {
     menuBar = new QMenuBar;
     Menu = new QMenu(tr("&Menu"), this);
+    darkmode = Menu->addAction(tr("D&ark Mode"));
     about = Menu->addAction(tr("A&bout"));
     menuBar->addMenu(Menu);
     connect(about, SIGNAL(triggered()), this, SLOT(showAbout()));
+    connect(darkmode, SIGNAL(triggered()), this, SLOT(setDarkMode()));
 }
 
 QGroupBox *Window::createComboBox()
@@ -204,19 +206,55 @@ std::string Window::getEdition(std::string identifier)
 void Window::showAbout()
 {
     QWidget *AboutWindow = new QWidget;
-    QHBoxLayout *layout = new QHBoxLayout;
-    QTextEdit *about_section = new QTextEdit;
-    about_section->setText(" Developed by Muslim Programmers Community © 2021.\n");
-    about_section->append(" Discord : discord.gg/7cnWVc8qgb \n");
-    about_section->append(" Instagram @muslimpgmrs \n");
-    about_section->append(" Github : https://github.com/Muslim-Programmers/ ");
-    QTextCursor cursor = about_section->textCursor();
-    about_section->selectAll();
-    about_section->setFontPointSize(14);
-    about_section->setReadOnly(true);
-    about_section->setTextCursor(cursor);
-    layout->addWidget(about_section);
+    QVBoxLayout *layout = new QVBoxLayout;
+    QPixmap pixmap("/opt/Qapp/qapp-198x198.png");
+    QFont hfont("Arial", 15, QFont::Bold);
+    QFont nfont("Arial", 13, QFont::AnyStyle);
+    QFont ffont("Arial", 12, QFont::AnyStyle);
+    ffont.setItalic(true);
+    QLabel *icon = new QLabel;
+    QLabel *header = new QLabel("A Project by Muslim Programmers Community");
+    QLabel *Discord = new QLabel("Discord : discord.gg/7cnWVc8qgb");
+    QLabel *Instagram = new QLabel("Instagram : @muslimpgmrs");
+    QLabel *footer = new QLabel("Emerging since 2021");
+    icon->setPixmap(pixmap);
+    icon->setAlignment(Qt::AlignCenter);
+    icon->setGeometry(QRect(312, 454, 21, 20));
+    header->setAlignment(Qt::AlignCenter);
+    header->setFont(hfont);
+    header->setGeometry(QRect(312, 454, 21, 20));
+    Discord->setFont(nfont);
+    Discord->setGeometry(QRect(300, 400, 50, 50));
+    Instagram->setFont(nfont);
+    Discord->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    Discord->setAlignment(Qt::AlignCenter);
+    Instagram->setAlignment(Qt::AlignCenter);
+    Instagram->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    footer->setFont(ffont);
+    footer->setAlignment(Qt::AlignCenter);
+    layout->addWidget(icon);
+    layout->addWidget(header);
+    layout->addWidget(Discord);
+    layout->addWidget(Instagram);
+    layout->addWidget(footer);
     AboutWindow->setLayout(layout);
     AboutWindow->setMinimumSize(602,443);
+    AboutWindow->setStyleSheet("background-color: #333333; color: white;");
     AboutWindow->show();
+}
+
+void Window::setDarkMode()
+{
+    if(dark_mode_enabled)
+    {
+        darkmode->setText("Dark Mode");
+        setStyleSheet("");
+        dark_mode_enabled = false;
+    }
+    else
+    {
+        darkmode->setText("✔ Dark Mode");
+        setStyleSheet("*{background-color: #333333; color: white;} QMenuBar:item:hover {background-color: blue;}");
+        dark_mode_enabled = true;
+    }
 }

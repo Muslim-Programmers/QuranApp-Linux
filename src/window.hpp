@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QWidget>
+#include <QLabel>
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -15,6 +16,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QAction>
+#include <QPixmap>
 #include "parser.hpp"
 
 class Window : public QMainWindow , public Parser
@@ -24,6 +26,7 @@ class Window : public QMainWindow , public Parser
         Window();
     private:
         int surah_number = 1;
+        bool dark_mode_enabled = false;
         std::string edition = "en.sahih";
         QGroupBox *createComboBox();
         QGroupBox *createTextBox();
@@ -36,6 +39,7 @@ class Window : public QMainWindow , public Parser
         QMenuBar *menuBar;
         QMenu *Menu;
         QAction *about;
+        QAction *darkmode;
         void getSurah(std::string surah_url);
         void getTranslation(std::string translation_url);
         std::string getEdition(std::string identifier);
@@ -43,6 +47,7 @@ class Window : public QMainWindow , public Parser
         void showSurah();
         void showTranslation();
         void showAbout();
+        void setDarkMode();
 };
 
 #endif

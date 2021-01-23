@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include "window.hpp"
-#include "json.hpp"
+#include "json/json.hpp"
 
 using json = nlohmann::json;
 

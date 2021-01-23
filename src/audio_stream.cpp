@@ -15,7 +15,7 @@
 #include <ao/ao.h>
 #include <vector>
 #include "audio_stream.hpp"
-#include "json.hpp"
+#include "json/json.hpp"
 #include "parser.hpp"
 
 #define BITS 8

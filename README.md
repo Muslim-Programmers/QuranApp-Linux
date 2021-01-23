@@ -7,6 +7,10 @@ Quran app is an easy to use quran reader with support for translation in multipl
 
 This Project uses [nlohmann json](https://github.com/nlohmann/json) for json parsing .
 
+![shot2](https://user-images.githubusercontent.com/77830098/105571013-b9375c00-5d72-11eb-9da7-67d1e7384796.png)
+![shot3](https://user-images.githubusercontent.com/77830098/105571016-bd637980-5d72-11eb-86a2-bd70acb45954.png)
+
+
 **Dependencies**
 
 `libcurl4-openssl-dev , qt5-default, nlohmann json, libpmg123-dev, libao-dev`
@@ -28,6 +32,3 @@ Quran streaming only available in CLI mode now. Open terminal and type `qapp --h
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`
-
-
-![](https://cdn.discordapp.com/attachments/802126045804232704/802132543612780594/unknown.png)

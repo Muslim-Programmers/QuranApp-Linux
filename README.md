@@ -19,9 +19,8 @@ Quran app is an easy to use quran reader with support for translation in multipl
 2. clone the repo and cd to repo folder
 3. `mkdir build && cmake ..`
 4. run `make` , it will compile the program
-5. run the program `./qapp --h`
-
-if you run the program without any arguements it will open new window ( feature still under developement).
+5. run `cd .. && sudo ./install.sh`
+6. Open the app from application menu 
 
 quran streaming only available in CLI mode now.
 

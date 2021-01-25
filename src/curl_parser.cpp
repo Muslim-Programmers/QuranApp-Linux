@@ -12,7 +12,7 @@
 #include <curl/curl.h>
 #include <iostream>
 
-std::size_t Parser::WriteMemoryCallback(char *in, std::size_t size, std::size_t nmemb, std::string *out)
+std::size_t CURLParser::WriteMemoryCallback(char *in, std::size_t size, std::size_t nmemb, std::string *out)
 {
     std::size_t total_size = size * nmemb;
     if(total_size)
@@ -23,18 +23,18 @@ std::size_t Parser::WriteMemoryCallback(char *in, std::size_t size, std::size_t 
     return 0;
 }
 
-std::string Parser::curl_process()
+std::string CURLParser::curl_process()
 {
     std::string str_buffer;
-    CURL *curl_handler = curl_easy_init();
+    CURL *curl_handler = curl_easy_init(); // Initialize CURL
     CURLcode res;
 
     if(curl_handler)
     {
-        curl_easy_setopt(curl_handler, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl_handler, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-        curl_easy_setopt(curl_handler, CURLOPT_WRITEDATA, &str_buffer);
-        res = curl_easy_perform(curl_handler);
+        curl_easy_setopt(curl_handler, CURLOPT_URL, url.c_str());              // set URL
+        curl_easy_setopt(curl_handler, CURLOPT_WRITEFUNCTION, WriteMemoryCallback); // set Function to process Request Data
+        curl_easy_setopt(curl_handler, CURLOPT_WRITEDATA, &str_buffer); // set string Variable to save Contents
+        res = curl_easy_perform(curl_handler); // Perform Request
         if(res != CURLE_OK)
         {
             std::cerr << " curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;

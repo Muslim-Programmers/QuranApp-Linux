@@ -1,10 +1,11 @@
+#pragma once
 #ifndef __AUDIO_STREAM_H__
 #define __AUDIO_STREAM_H__
 
 #include <iostream>
-#include "parser.hpp"
+#include "curl_parser.hpp"
 
-class audio_stream : public Parser
+class audio_stream : public CURLParser
 {
     private:
         std::string audio_url(int surah_number);

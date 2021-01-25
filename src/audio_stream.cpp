@@ -16,7 +16,7 @@
 #include <vector>
 #include "audio_stream.hpp"
 #include "json/json.hpp"
-#include "parser.hpp"
+#include "curl_parser.hpp"
 
 #define BITS 8
 
@@ -69,14 +69,14 @@ void audio_stream::process_stream()
         mpg123_init();
         mh = mpg123_new(NULL, NULL);
         mpg123_open_feed(mh);
-        json j_parsed = json::parse(curl_process());
-        int numberOfayahs = j_parsed["data"]["numberOfAyahs"];
-        int surah_number = j_parsed["data"]["number"];
+        json metadata = json::parse(curl_process());
+        int numberOfayahs = metadata["data"]["numberOfAyahs"];
+        int surah_number = metadata["data"]["number"];
         std::cout << "\n\033[1;34m Stream Info:- " << std::endl;
-        std::cout << " Surah Name : " << j_parsed["data"]["englishName"] << std::endl;
+        std::cout << " Surah Name : " << metadata["data"]["englishName"] << std::endl;
         std::cout << " Surah Number : " << surah_number << std::endl;
         std::cout << " Number of Ayahs : " << numberOfayahs << std::endl;
-        std::cout << " Reciter : " << j_parsed["data"]["edition"]["name"] << " (" << j_parsed["data"]["edition"]["englishName"] << " ) \033[0m" << std::endl;
+        std::cout << " Reciter : " << metadata["data"]["edition"]["name"] << " (" << metadata["data"]["edition"]["englishName"] << " ) \033[0m" << std::endl;
         CURL *curl = curl_easy_init();
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, play_stream);
         curl_easy_setopt(curl, CURLOPT_URL, audio_url(surah_number).c_str());

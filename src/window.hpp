@@ -1,3 +1,4 @@
+#pragma once
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
@@ -17,9 +18,10 @@
 #include <QMenuBar>
 #include <QAction>
 #include <QPixmap>
-#include "parser.hpp"
+#include <QMessageBox>
+#include "curl_parser.hpp"
 
-class Window : public QMainWindow , public Parser
+class Window : public QMainWindow , public CURLParser
 {
     Q_OBJECT
     public:

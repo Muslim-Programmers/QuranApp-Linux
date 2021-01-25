@@ -1,9 +1,10 @@
-#ifndef __PARSER_H__
-#define __PARSER_H__
+#pragma once
+#ifndef __CURL_PARSER_H__
+#define __CURL_PARSER_H__
 
 #include <string>
 
-class Parser {
+class CURLParser {
 protected:
     std::string url;
     std::string curl_process();

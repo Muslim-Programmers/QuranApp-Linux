@@ -7,42 +7,53 @@ using json = nlohmann::json;
 
 Window::Window()
 {
-    QWidget *MainWidget = new QWidget;
-    QVBoxLayout *MainLayout = new QVBoxLayout;
-    createMenu();
-    setMenuBar(menuBar);
-    MainLayout->addWidget(createComboBox());
-    MainLayout->addWidget(createTextBox());
-    MainWidget->setLayout(MainLayout);
-    setCentralWidget(MainWidget);
-    setWindowTitle("Quran app");
-    setMinimumWidth(800);
-    setMinimumHeight(600);
-    connect(surah, SIGNAL(currentTextChanged(QString)), this, SLOT(showSurah()));
-    connect(translation, SIGNAL(currentTextChanged(QString)), this, SLOT(showTranslation()));
+    QWidget *MainWidget = new QWidget;         // Main Widget
+    QVBoxLayout *MainLayout = new QVBoxLayout; // Vertical Layout
+    createMenu();                              // Call createMenu() to configure MenuBar
+    setMenuBar(menuBar);                       // set MenuBar
+    MainLayout->addWidget(createComboBox());   // set ComboBox
+    MainLayout->addWidget(createTextBox());    // set TextBox
+    MainWidget->setLayout(MainLayout);         // set Layout
+    setCentralWidget(MainWidget);              // set Main Widget
+    setWindowTitle("Quran app");               // set Window Title
+    setMinimumWidth(800);                      // set Minimum Width of Window
+    setMinimumHeight(600);                     // set Minimum Height of Window
+    connect(surah, SIGNAL(currentTextChanged(QString)), this, SLOT(showSurah())); // Watch Changes in ComboBox surah
+    connect(translation, SIGNAL(currentTextChanged(QString)), this, SLOT(showTranslation())); // Watch Changes in ComboBox translation
 }
 
 void Window::createMenu()
 {
+    // Function to Configure MenuBar
+
     menuBar = new QMenuBar;
     Menu = new QMenu(tr("&Menu"), this);
-    darkmode = Menu->addAction(tr("D&ark Mode"));
-    about = Menu->addAction(tr("A&bout"));
+    darkmode = Menu->addAction(tr("D&ark Mode")); // Add Dark Mode Menu Entry
+    about = Menu->addAction(tr("A&bout"));        // Add About Menu Entry
     menuBar->addMenu(Menu);
-    connect(about, SIGNAL(triggered()), this, SLOT(showAbout()));
+    connect(about, SIGNAL(triggered()), this, SLOT(showAbout())); 
     connect(darkmode, SIGNAL(triggered()), this, SLOT(setDarkMode()));
 }
 
 QGroupBox *Window::createComboBox()
-{  
+{
+    // Function to Configure ComboBox
+
     std::vector<std::string>data = getMetadata();
-    QGroupBox *group = new QGroupBox;
-    QHBoxLayout *layout = new QHBoxLayout;
-    surah = new QComboBox;
+    QGroupBox *group = new QGroupBox;      // GroupBox ( To Group Widgets )
+    QHBoxLayout *layout = new QHBoxLayout; // Horizontal Layout
+    surah = new QComboBox;      
     translation = new QComboBox;
-    for(int i=0;i<114;i++)
+    if(data.empty())
     {
-        surah->addItem(QString::number(i+1) + ". " + QString::fromStdString(data.at(i)));
+        surah->addItem("No Internet"); // Add text to ComboBox
+    }
+    else
+    {
+        for(int i=0;i<114;i++)
+        {
+            surah->addItem(QString::number(i+1) + ". " + QString::fromStdString(data.at(i)));
+        }
     }
     translation->addItem("English");
     translation->addItem("Hindi");
@@ -58,6 +69,8 @@ QGroupBox *Window::createComboBox()
 
 QGroupBox *Window::createTextBox()
 {
+    // Function to configure Text Box
+
     std::string surah_url = "https://api.alquran.cloud/v1/surah/";
     std::string translation_url = "https://api.alquran.cloud/v1/surah/";
     surah_url.append(std::to_string(surah_number) + "/");
@@ -78,12 +91,21 @@ QGroupBox *Window::createTextBox()
 
 std::vector<std::string> Window::getMetadata()
 {
+    // Function to retrieve the surah Names
+
     std::vector<std::string>data;
     this->url = "https://api.alquran.cloud/v1/meta";
-    json metadata = json::parse(this->curl_process());
-    for(int i=0;i<114;i++)
-    {
-        data.push_back(metadata["data"]["surahs"]["references"][i]["englishName"]);
+    try {
+        json metadata = json::parse(this->curl_process()); // Parse the JSON data
+        for(int i=0;i<114;i++)
+        {
+            data.push_back(metadata["data"]["surahs"]["references"][i]["englishName"]); 
+        }
+    } catch(nlohmann::json::type_error &err) {
+
+        // caught if any errors encountered during JSON parsing
+
+        QMessageBox::critical(this, "Error", "No Internet Connection , Please enable internet and restart the Application");
     }
     return data;
 }
@@ -93,56 +115,65 @@ void Window::getSurah(std::string surah_url)
     
     this->url = surah_url;
     QVector<QString>parsed_data;
-    json parse_surah = json::parse(curl_process());
-    int ayahs = parse_surah["data"]["numberOfAyahs"];
-    int count = 1;
-    show_surah->setText(QString::fromStdString(parse_surah["data"]["name"].get<std::string>()));
-    QTextCursor cursor = show_surah->textCursor();
-    QTextBlockFormat textBlockFormat = cursor.blockFormat();
-    textBlockFormat.setAlignment(Qt::AlignCenter);
-    cursor.mergeBlockFormat(textBlockFormat);
-    for(int i=0;i<ayahs;i++)
-    {
-        parsed_data.push_back(QString::fromStdString(parse_surah["data"]["ayahs"][i]["text"].get<std::string>()));
+    try {
+        json parse_surah = json::parse(curl_process());
+        int ayahs = parse_surah["data"]["numberOfAyahs"];
+        int count = 1;
+        show_surah->setText(QString::fromStdString(parse_surah["data"]["name"].get<std::string>()));
+        QTextCursor cursor = show_surah->textCursor();
+        QTextBlockFormat textBlockFormat = cursor.blockFormat();
+        textBlockFormat.setAlignment(Qt::AlignCenter);              // Align Text to Center
+        cursor.mergeBlockFormat(textBlockFormat);
+        for(int i=0;i<ayahs;i++)
+        {
+            parsed_data.push_back(QString::fromStdString(parse_surah["data"]["ayahs"][i]["text"].get<std::string>()));
+        }
+        for(QString ayah : parsed_data)
+        {
+            QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
+            show_surah->append(data + "\n");
+            count++;
+        }
+        show_surah->selectAll();
+        show_surah->setFontPointSize(16); // set Font Size
+        show_surah->setTextCursor(cursor);
+        show_surah->setReadOnly(true);    // set Text Box Read Only
+    } catch(nlohmann::json::type_error &err) {
+        show_surah->setText(" Please Enable Internet to use this application ");
     }
-    for(QString ayah : parsed_data)
-    {
-        QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
-        show_surah->append(data + "\n");
-        count++;
-    }
-    show_surah->selectAll();
-    show_surah->setFontPointSize(16);
-    show_surah->setTextCursor(cursor);
-    show_surah->setReadOnly(true);
 }
 
 void Window::getTranslation(std::string translation_url)
 {
     this->url = translation_url;
     QVector<QString>parsed_data;
-    json parse_surah = json::parse(curl_process());
-    int ayahs = parse_surah["data"]["numberOfAyahs"];
-    int count = 1;
-    show_translation->setText(QString::fromStdString(parse_surah["data"]["englishName"].get<std::string>()));
-    QTextCursor cursor = show_translation->textCursor();
-    QTextBlockFormat textBlockFormat = cursor.blockFormat();
-    textBlockFormat.setAlignment(Qt::AlignCenter);
-    cursor.mergeBlockFormat(textBlockFormat);
-    for(int i=0;i<ayahs;i++)
-    {
-        parsed_data.push_back(QString::fromStdString(parse_surah["data"]["ayahs"][i]["text"].get<std::string>()));
+    try {
+
+        json parse_surah = json::parse(curl_process());
+        int ayahs = parse_surah["data"]["numberOfAyahs"];
+        int count = 1;
+        show_translation->setText(QString::fromStdString(parse_surah["data"]["englishName"].get<std::string>()));
+        QTextCursor cursor = show_translation->textCursor();
+        QTextBlockFormat textBlockFormat = cursor.blockFormat();
+        textBlockFormat.setAlignment(Qt::AlignCenter);
+        cursor.mergeBlockFormat(textBlockFormat);
+        for(int i=0;i<ayahs;i++)
+        {
+            parsed_data.push_back(QString::fromStdString(parse_surah["data"]["ayahs"][i]["text"].get<std::string>()));
+        }
+        for(QString ayah : parsed_data)
+        {
+            QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
+            show_translation->append(data + "\n");
+            count++;
+        }
+        show_translation->selectAll();
+        show_translation->setFontPointSize(16);
+        show_translation->setTextCursor(cursor);
+        show_translation->setReadOnly(true);
+    } catch(nlohmann::json::type_error &err) {
+        show_translation->setText(" Please Enable Internet to use this application ");
     }
-    for(QString ayah : parsed_data)
-    {
-        QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
-        show_translation->append(data + "\n");
-        count++;
-    }
-    show_translation->selectAll();
-    show_translation->setFontPointSize(16);
-    show_translation->setTextCursor(cursor);
-    show_translation->setReadOnly(true);
 }
 
 void Window::showSurah()
@@ -150,9 +181,11 @@ void Window::showSurah()
     std::string surah_url = "https://api.alquran.cloud/v1/surah/";
     std::string translation_url = surah_url;
     std::vector<std::string>data;
-    char *token =  strtok((char *)surah->currentText().toStdString().c_str(), ".");
+    char *token =  strtok((char *)surah->currentText().toStdString().c_str(), "."); // Tokenize String
     while(token != NULL)
     {   
+        // Strings before and after '.' character is pushed to vector
+
         data.push_back(token);
         token = strtok(NULL, ".");
     }

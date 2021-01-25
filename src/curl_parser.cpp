@@ -7,7 +7,7 @@
    *
 ***/
 
-#include "parser.hpp"
+#include "curl_parser.hpp"
 #include <string>
 #include <curl/curl.h>
 #include <iostream>

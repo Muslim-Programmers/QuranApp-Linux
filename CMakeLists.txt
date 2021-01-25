@@ -12,10 +12,10 @@ set(SRCS
     src/main.cpp
     src/window.cpp
     src/audio_stream.cpp
-    src/parser.cpp
+    src/curl_parser.cpp
     src/window.hpp
     src/audio_stream.hpp
-    src/parser.hpp
+    src/curl_parser.hpp
 )
 
 if(CMAKE_VERSION VERSION_LESS "3.7.0")

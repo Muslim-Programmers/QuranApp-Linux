@@ -1,7 +1,7 @@
 FILE=./build/qapp
 if [ -f "$FILE" ]; then
 	sudo mkdir -p /opt/Qapp/
-	sudo cp ./build/qapp /usr/bin/
+	sudo cp ./build/qapp /usr/local/bin/
 	sudo cp ./resources/qapp-splash.jpg /opt/Qapp/
 	sudo cp ./resources/qapp-198x198.png /opt/Qapp/
 	sudo cp ./resources/icon.png /opt/Qapp/

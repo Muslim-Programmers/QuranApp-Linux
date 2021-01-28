@@ -1,7 +1,8 @@
 # Configurations
 .vscode/
 build/
-
+src/.clangd/
+src/compile_commands.json
 # External Lib
 json.hpp
 

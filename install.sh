@@ -1,11 +1,11 @@
 FILE=./build/qapp
 if [ -f "$FILE" ]; then
-	sudo mkdir -p /opt/Qapp/
-	sudo cp ./build/qapp /usr/local/bin/
-	sudo cp ./resources/qapp-splash.jpg /opt/Qapp/
-	sudo cp ./resources/qapp-198x198.png /opt/Qapp/
-	sudo cp ./resources/icon.png /opt/Qapp/
-	sudo cp qapp.desktop /usr/share/applications/
+	mkdir -p $HOME/.local/share/qapp/ 
+	cp ./build/qapp $HOME/.local/bin/
+	cp ./resources/qapp-splash.jpg $HOME/.local/share/qapp/
+	cp ./resources/qapp-198x198.png $HOME/.local/share/qapp/
+	cp ./resources/icon.png $HOME/.local/share/qapp/
+	cp qapp.desktop $HOME/.local/share/applications/ 
 	echo "Successfully Installed"
 	echo "Open Quran app from Application Menu or type qapp --h "
 else

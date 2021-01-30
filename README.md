@@ -28,9 +28,6 @@ This Project uses [nlohmann json](https://github.com/nlohmann/json) for json par
 5. run `cd .. && sudo ./install.sh`
 6. Open the app from application menu 
 
-Add `export PATH=$HOME/.local/bin:$PATH` to your .bashrc to use qapp in CLI mode.
-
-
 Quran streaming only available in CLI mode now. Open terminal and type `qapp --h` to show help menu. 
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*

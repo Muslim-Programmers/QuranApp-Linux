@@ -37,9 +37,8 @@ std::string CURLParser::curl_process()
         res = curl_easy_perform(curl_handler); // Perform Request
         if(res != CURLE_OK)
         {
-            std::cerr << " curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
-            exit(1);
-        } 
+        	return "{\"Error\": \"NULL\"}";
+	} 
         else 
         {   
             curl_easy_cleanup(curl_handler);

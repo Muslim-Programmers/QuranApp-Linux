@@ -27,9 +27,10 @@ void Window::createMenu()
     // Function to Configure MenuBar
 
     menuBar = new QMenuBar;
-    Menu = new QMenu(tr("&Menu"), this);
-    darkmode = Menu->addAction(tr("D&ark Mode")); // Add Dark Mode Menu Entry
-    about = Menu->addAction(tr("A&bout"));        // Add About Menu Entry
+    Menu = new QMenu(tr("Menu"), this);
+    darkmode = Menu->addAction(tr("Dark Mode")); // Add Dark Mode Menu Entry
+    about = Menu->addAction(tr("About"));        // Add About Menu Entry
+    darkmode->setCheckable(true);
     menuBar->addMenu(Menu);
     connect(about, SIGNAL(triggered()), this, SLOT(showAbout())); 
     connect(darkmode, SIGNAL(triggered()), this, SLOT(setDarkMode()));
@@ -280,13 +281,11 @@ void Window::setDarkMode()
 {
     if(dark_mode_enabled)
     {
-        darkmode->setText("Dark Mode");
         setStyleSheet("");
         dark_mode_enabled = false;
     }
     else
     {
-        darkmode->setText("✔ Dark Mode");
         setStyleSheet("*{background-color: #333333; color: white;} QMenuBar:item:hover {background-color: blue;}");
         dark_mode_enabled = true;
     }

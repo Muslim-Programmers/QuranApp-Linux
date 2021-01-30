@@ -241,7 +241,7 @@ void Window::showAbout()
 {
     QWidget *AboutWindow = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
-    QPixmap pixmap("/opt/Qapp/qapp-198x198.png");
+    QPixmap pixmap("/opt/qapp/qapp-198x198.png");
     QFont hfont("Arial", 15, QFont::Bold);
     QFont nfont("Arial", 13, QFont::AnyStyle);
     QFont ffont("Arial", 12, QFont::AnyStyle);

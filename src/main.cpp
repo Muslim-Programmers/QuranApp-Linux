@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     // Initiate Qt Application
     QApplication qapp(argc, argv);
     Window *window;                                         // Main Window
-    QPixmap pixmap("/opt/Qapp/qapp-splash.jpg");            // Image to show in Splash Screen
+    QPixmap pixmap("/opt/qapp/qapp-splash.jpg");            // Image to show in Splash Screen
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint); // Splash Screen object
     
     // Check if there is command-line arguements provided

@@ -181,16 +181,7 @@ void Window::showSurah()
 {
     std::string surah_url = "https://api.alquran.cloud/v1/surah/";
     std::string translation_url = surah_url;
-    std::vector<std::string>data;
-    char *token =  strtok((char *)surah->currentText().toStdString().c_str(), "."); // Tokenize String
-    while(token != NULL)
-    {   
-        // Strings before and after '.' character is pushed to vector
-
-        data.push_back(token);
-        token = strtok(NULL, ".");
-    }
-    surah_number = std::stoi(data.at(0));
+    surah_number = surah->currentIndex() + 1;
     surah_url.append(std::to_string(surah_number) + "/");
     surah_url.append("quran-simple-enhanced");
     edition = getEdition(translation->currentText().toStdString());

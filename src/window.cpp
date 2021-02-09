@@ -53,7 +53,7 @@ Window::Window()
     MainLayout->addWidget(createTextBox());    // set TextBox
     MainWidget->setLayout(MainLayout);         // set Layout
     setCentralWidget(MainWidget);              // set Main Widget
-    setWindowTitle("Quran app");               // set Window Title
+    setWindowTitle("Quran App");               // set Window Title
     setMinimumWidth(800);                      // set Minimum Width of Window
     setMinimumHeight(600);                     // set Minimum Height of Window
     connect(surah, SIGNAL(currentTextChanged(QString)), this, SLOT(showSurah())); // Watch Changes in ComboBox surah
@@ -381,8 +381,8 @@ void Window::showAbout()
 {
     QWidget *AboutWindow = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
-    QPixmap pixmap("resources/qapp-198x198.png");
-    QFile f(":qdarkstyle/style.qss");
+    QPixmap pixmap("/opt/qapp/resources/qapp-198x198.png");
+    QFile f("/opt/qapp/resources/qdarkstyle/style.qss");
     f.open(QFile::ReadOnly | QFile::Text);
     QTextStream ts(&f);
     QFont hfont("Arial", 15, QFont::Bold);
@@ -431,7 +431,7 @@ void Window::showAbout()
 
 void Window::setDarkMode()
 {
-    QFile f(":qdarkstyle/style.qss"); 
+    QFile f("/opt/qapp/resources/qdarkstyle/style.qss"); 
     f.open(QFile::ReadOnly | QFile::Text); // open window stylesheet
     QTextStream ts(&f); 
     if(dark_mode_enabled)

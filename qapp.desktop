@@ -4,5 +4,5 @@ Comment= Simple Quran reading app
 Exec=/usr/bin/qapp
 Terminal=false
 Type=Application
-Icon=/usr/share/qapp/icon.png
+Icon=/opt/qapp/resources/icon.png
 Categories=Education

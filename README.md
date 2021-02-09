@@ -3,7 +3,13 @@
 بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ ,
 السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ
 
+**Overview**
+
 Quran app is an easy to use quran reader with support for translation in multiple languages and stream beautiful quran recitation . Made with Qt5 .
+
+User can Access Prayer Times from Menu->Prayer Times.
+
+Quran streaming only available in CLI mode now. Open terminal and type `qapp --h` to show help menu. 
 
 This Project uses [nlohmann json](https://github.com/nlohmann/json) for json parsing .
 
@@ -27,8 +33,6 @@ This Project uses [nlohmann json](https://github.com/nlohmann/json) for json par
 4. run `make` , it will compile the program
 5. run `cd .. && sudo ./install.sh`
 6. Open the app from application menu 
-
-Quran streaming only available in CLI mode now. Open terminal and type `qapp --h` to show help menu. 
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`

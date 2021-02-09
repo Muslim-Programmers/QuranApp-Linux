@@ -1,9 +1,47 @@
 #include <iostream>
 #include <string>
+#include <QFile>
+#include <QTextStream>
 #include "window.hpp"
 #include "json/json.hpp"
 
 using json = nlohmann::json;
+
+const std::string languages [] = {
+    "Albanian",
+    "Azerbaijani",
+    "Bengali",
+    "Czech",
+    "Dutch",
+    "English",
+    "Farsi",
+    "French",
+    "German",
+    "Hausa",
+    "Hindi",
+    "Indonesian",
+    "Japanese",
+    "Korean",
+    "Kurdish",
+    "Malayalam",
+    "Maldivian",
+    "Norwegian",
+    "Polish",
+    "Portuguese",
+    "Sindhi",
+    "Spanish",
+    "Swedish",
+    "Swahili",
+    "Romanian",
+    "Russian",
+    "Tamil",
+    "Tajik",
+    "Thai",
+    "Turkish",
+    "Uyghur",
+    "Urdu",
+    "Uzbek"
+};
 
 Window::Window()
 {
@@ -29,11 +67,13 @@ void Window::createMenu()
     menuBar = new QMenuBar;
     Menu = new QMenu(tr("Menu"), this);
     darkmode = Menu->addAction(tr("Dark Mode")); // Add Dark Mode Menu Entry
+    prayertimes = Menu->addAction(tr("Prayer Times"));
     about = Menu->addAction(tr("About"));        // Add About Menu Entry
     darkmode->setCheckable(true);
     menuBar->addMenu(Menu);
     connect(about, SIGNAL(triggered()), this, SLOT(showAbout())); 
     connect(darkmode, SIGNAL(triggered()), this, SLOT(setDarkMode()));
+    connect(prayertimes, SIGNAL(triggered()), this, SLOT(showPrayerTimes()));
 }
 
 QGroupBox *Window::createComboBox()
@@ -56,12 +96,10 @@ QGroupBox *Window::createComboBox()
             surah->addItem(QString::number(i+1) + ". " + QString::fromStdString(data.at(i)));
         }
     }
-    translation->addItem("English");
-    translation->addItem("Hindi");
-    translation->addItem("Malayalam");
-    translation->addItem("Turkish");
-    translation->addItem("Tamil");
-    translation->addItem("Urdu");
+    for(auto element : languages)
+    {
+        translation->addItem(QString::fromStdString(element));
+    }
     layout->addWidget(translation);
     layout->addWidget(surah);
     group->setLayout(layout);
@@ -78,6 +116,7 @@ QGroupBox *Window::createTextBox()
     surah_url.append("quran-simple-enhanced");
     translation_url.append(std::to_string(surah_number) + "/");
     translation_url.append(edition);
+    translation->setCurrentIndex(5);
     QGroupBox *group = new QGroupBox;
     QHBoxLayout *layout = new QHBoxLayout;
     show_surah = new QTextEdit;
@@ -181,6 +220,7 @@ void Window::showSurah()
 {
     std::string surah_url = "https://api.alquran.cloud/v1/surah/";
     std::string translation_url = surah_url;
+    std::vector<std::string>data;
     surah_number = surah->currentIndex() + 1;
     surah_url.append(std::to_string(surah_number) + "/");
     surah_url.append("quran-simple-enhanced");
@@ -202,29 +242,138 @@ void Window::showTranslation()
 
 std::string Window::getEdition(std::string identifier)
 {
-    if(identifier == "English")
+    if(identifier == "Albanian")
+    {
+        return "sq.ahmeti";
+    }
+    else if(identifier == "Azerbaijani")
+    {
+        return "az.mammadaliyev";
+    }
+    else if(identifier == "Bengali")
+    {
+        return "bn.bengali";
+    }
+    else if(identifier == "Czech")
+    {
+        return "cs.hrbek";
+    }
+    else if(identifier == "Dutch")
+    {
+        return "nl.keyzer";
+    }
+    else if(identifier == "English")
     {
         return "en.sahih";
     }
+    else if(identifier == "Farsi")
+    {
+        return "fa.ayati";
+    }
+    else if(identifier == "French")
+    {
+        return "fr.hamidullah";
+    }
+    else if(identifier == "German")
+    {
+        return "de.aburida";
+    }
+    else if(identifier == "Hausa")
+    {
+        return "ha.gumi";
+    } 
     else if(identifier == "Hindi")
     {
         return "hi.hindi";
+    }
+    else if(identifier == "Indonesian")
+    {
+        return "id.indonesian";
+    }
+    else if(identifier == "Japanese")
+    {
+        return "ja.japanese";
+    }
+    else if(identifier == "Korean")
+    {
+        return "ko.korean";
+    }
+    else if(identifier == "Kurdish")
+    {
+        return "ku.asan";
     }
     else if(identifier == "Malayalam")
     {
         return "ml.abdulhameed";
     }
+    else if(identifier == "Maldivian")
+    {
+        return "dv.divehi";   
+    }
+    else if(identifier == "Norwegian")
+    {
+        return "no.berg";
+    }
+    else if(identifier == "Polish")
+    {
+        return "pl.bielawskiego";
+    }
+    else if(identifier == "Portuguese")
+    {
+        return "pt.elhayek";
+    }
+    else if(identifier == "Sindhi")
+    {
+        return "sd.amroti";
+    }
+    else if(identifier == "Spanish")
+    {
+        return "es.cortes";
+    }
+    else if(identifier == "Swedish")
+    {
+        return "sv.bernstorm";
+    }
+    else if(identifier == "Swahili")
+    {
+        return "sw.barwani";
+    }
+
+    else if(identifier == "Romanian")
+    {
+        return "ro.grigore";
+    }
+    else if(identifier == "Russian")
+    {
+        return "ru.kuliev";
+    }
     else if(identifier == "Tamil")
     {
         return "ta.tamil";
+    }
+    else if(identifier == "Tajik")
+    {
+        return "tg.ayati";
+    }
+    else if(identifier == "Thai")
+    {
+        return "th.thai";
     }
     else if(identifier == "Turkish")
     {
         return "tr.ates";
     }
+    else if(identifier == "Uyghur")
+    {
+        return "ug.saleh";
+    }
     else if(identifier == "Urdu")
     {
         return "ur.ahmedali";
+    }
+    else if (identifier == "Uzbek")
+    {
+        return "uz.sodik";
     }
 }
 
@@ -232,7 +381,10 @@ void Window::showAbout()
 {
     QWidget *AboutWindow = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
-    QPixmap pixmap("/opt/qapp/qapp-198x198.png");
+    QPixmap pixmap("resources/qapp-198x198.png");
+    QFile f(":qdarkstyle/style.qss");
+    f.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ts(&f);
     QFont hfont("Arial", 15, QFont::Bold);
     QFont nfont("Arial", 13, QFont::AnyStyle);
     QFont ffont("Arial", 12, QFont::AnyStyle);
@@ -241,7 +393,8 @@ void Window::showAbout()
     QLabel *header = new QLabel("A Project by Muslim Programmers Community");
     QLabel *Discord = new QLabel("Discord : discord.gg/7cnWVc8qgb");
     QLabel *Instagram = new QLabel("Instagram : @muslimpgmrs");
-    QLabel *footer = new QLabel("Emerging since 2021");
+    QLabel *Contributers = new QLabel("Contributers : Nashid , Jonas , Bilal");
+    QLabel *footer = new QLabel("www.muslimprogrammers.com");
     icon->setPixmap(pixmap);
     icon->setAlignment(Qt::AlignCenter);
     icon->setGeometry(QRect(312, 454, 21, 20));
@@ -255,21 +408,32 @@ void Window::showAbout()
     Discord->setAlignment(Qt::AlignCenter);
     Instagram->setAlignment(Qt::AlignCenter);
     Instagram->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    Contributers->setFont(nfont);
+    Contributers->setAlignment(Qt::AlignCenter);
     footer->setFont(ffont);
     footer->setAlignment(Qt::AlignCenter);
+    footer->setTextInteractionFlags(Qt::TextSelectableByMouse);
     layout->addWidget(icon);
     layout->addWidget(header);
     layout->addWidget(Discord);
     layout->addWidget(Instagram);
+    layout->addWidget(Contributers);
     layout->addWidget(footer);
     AboutWindow->setLayout(layout);
     AboutWindow->setMinimumSize(602,443);
-    AboutWindow->setStyleSheet("background-color: #333333; color: white;");
+    AboutWindow->setWindowTitle("About");
+    if(dark_mode_enabled)
+        AboutWindow->setStyleSheet(ts.readAll());
+    else
+        AboutWindow->setStyleSheet("");
     AboutWindow->show();
 }
 
 void Window::setDarkMode()
 {
+    QFile f(":qdarkstyle/style.qss"); 
+    f.open(QFile::ReadOnly | QFile::Text); // open window stylesheet
+    QTextStream ts(&f); 
     if(dark_mode_enabled)
     {
         setStyleSheet("");
@@ -277,7 +441,125 @@ void Window::setDarkMode()
     }
     else
     {
-        setStyleSheet("*{background-color: #333333; color: white;} QMenuBar:item:hover {background-color: blue;}");
+        setStyleSheet(ts.readAll());
         dark_mode_enabled = true;
     }
+}
+
+void Window::showPrayerTimes()
+{
+    QWidget *widget = new QWidget;
+    QGridLayout *Layout = new QGridLayout;
+    this->url = "https://ipinfo.io/country";
+    std::string country = curl_process();
+    this->url = "https://ipinfo.io/city";
+    std::string city = curl_process(); 
+    QFile f(":qdarkstyle/style.qss");
+    f.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ts(&f);
+    QFont timeFont("Arial", 18, QFont::Bold);
+    QFont textFont("Arial", 15, QFont::Bold);
+    QDate today = QDate::currentDate();
+    QLabel *DateToday = new QLabel(today.toString("dd MMM yyyy"));
+    timer = new QTimer;
+    display = new QLabel;
+    imsak = new QLabel("Imsak: ");
+    fajr = new QLabel("Fajr: ");
+    sunrise = new QLabel("Sunrise: ");
+    zuhr = new QLabel("Zuhr: ");
+    asr = new QLabel("Asr: ");
+    maghrib = new QLabel("Maghrib: ");
+    sunset = new QLabel("Sunset: ");
+    isha = new QLabel("Isha: ");
+    midnight = new QLabel("Midnight: ");
+    Country = new QLineEdit;
+    City = new QLineEdit;
+    Show = new QPushButton("Show Time");
+    Country->setPlaceholderText("Country");
+    City->setPlaceholderText("City");
+    imsak->setFont(textFont);
+    fajr->setFont(textFont);
+    sunrise->setFont(textFont);
+    zuhr->setFont(textFont);
+    asr->setFont(textFont);
+    maghrib->setFont(textFont);
+    sunset->setFont(textFont);
+    isha->setFont(textFont);
+    midnight->setFont(textFont);
+    display->setFont(timeFont);
+    DateToday->setFont(textFont);
+    Layout->addWidget(display, 0, 1, 0);
+    Layout->addWidget(DateToday, 1, 1, 0);
+    Layout->addWidget(Country, 2, 0, 0);
+    Layout->addWidget(City, 2, 1, 0);
+    Layout->addWidget(Show, 2, 2, 0);
+    Layout->addWidget(imsak, 3, 0, 0);
+    Layout->addWidget(fajr, 3, 1, 0);
+    Layout->addWidget(sunrise, 3, 2, 0);
+    Layout->addWidget(zuhr, 4, 0, 0);
+    Layout->addWidget(asr, 4, 1, 0);
+    Layout->addWidget(maghrib, 4, 2, 0);
+    Layout->addWidget(isha, 5, 0, 0);
+    Layout->addWidget(sunset, 5, 1, 0);
+    Layout->addWidget(midnight, 5, 2, 0);
+    widget->setLayout(Layout);
+    widget->setWindowTitle("Prayer Times");
+    widget->setMinimumSize(500, 400);
+    if(dark_mode_enabled)
+        widget->setStyleSheet(ts.readAll());
+    else
+        widget->setStyleSheet("");
+    widget->show();
+    connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
+    connect(Show, SIGNAL(clicked()), this, SLOT(getPrayerTimes()));
+    timer->start(1000);
+}
+
+void Window::showTime()
+{
+    QTime time = QTime::currentTime();
+    QString time_text = time.toString("hh:mm AP");
+    if((time.second() % 2) == 0)
+    {
+        time_text[2] = ' ';
+    }
+    display->setText(time_text);
+}
+
+void Window::getPrayerTimes()
+{
+    std::string apiurl = "http://api.aladhan.com/v1/timingsByCity?city=";
+    std::string country = Country->text().toStdString();
+    std::string city = City->text().toStdString();
+    apiurl.append(city + "&country=" + country + "&method=4");
+    QString temp;
+    this->url = apiurl;
+    json result = json::parse(curl_process());
+    temp = imsak->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Imsak"].get<std::string>()));
+    imsak->setText(temp);
+    temp = fajr->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Fajr"].get<std::string>()));
+    fajr->setText(temp);
+    temp = sunrise->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Sunrise"].get<std::string>()));
+    sunrise->setText(temp);
+    temp = zuhr->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Dhuhr"].get<std::string>()));
+    zuhr->setText(temp);
+    temp = asr->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Asr"].get<std::string>()));
+    asr->setText(temp);
+    temp = maghrib->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Maghrib"].get<std::string>()));
+    maghrib->setText(temp);
+    temp = isha->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Isha"].get<std::string>()));
+    isha->setText(temp);
+    temp = midnight->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Midnight"].get<std::string>()));
+    midnight->setText(temp);
+    temp = sunset->text();
+    temp.append(QString::fromStdString(result["data"]["timings"]["Sunset"].get<std::string>()));
+    midnight->setText(temp);
 }

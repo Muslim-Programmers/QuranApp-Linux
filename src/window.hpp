@@ -5,12 +5,15 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QTextEdit>
+#include <QCheckBox>
 #include <vector>
 #include <QTextCursor>
 #include <QTextBlockFormat>
@@ -19,6 +22,10 @@
 #include <QAction>
 #include <QPixmap>
 #include <QMessageBox>
+#include <QTimer>
+#include <QTime>
+#include <QDate>
+#include <QGridLayout>
 #include "curl_parser.hpp"
 
 class Window : public QMainWindow , public CURLParser
@@ -42,6 +49,21 @@ class Window : public QMainWindow , public CURLParser
         QMenu *Menu;
         QAction *about;
         QAction *darkmode;
+        QAction *prayertimes;
+        QTimer *timer;
+        QLabel *display;
+        QLabel *imsak;
+        QLabel *fajr;
+        QLabel *sunrise;
+        QLabel *zuhr;
+        QLabel *asr;
+        QLabel *maghrib;
+        QLabel *isha;
+        QLabel *midnight;
+        QLabel *sunset;
+        QLineEdit *Country;
+        QLineEdit *City;
+        QPushButton *Show;
         void getSurah(std::string surah_url);
         void getTranslation(std::string translation_url);
         std::string getEdition(std::string identifier);
@@ -50,6 +72,9 @@ class Window : public QMainWindow , public CURLParser
         void showTranslation();
         void showAbout();
         void setDarkMode();
+        void showTime();
+        void showPrayerTimes();
+        void getPrayerTimes();
 };
 
 #endif

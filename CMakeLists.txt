@@ -16,6 +16,7 @@ set(SRCS
     src/window.hpp
     src/audio_stream.hpp
     src/curl_parser.hpp
+    qdarkstyle/style.qrc
 )
 
 if(CMAKE_VERSION VERSION_LESS "3.7.0")

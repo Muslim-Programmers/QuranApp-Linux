@@ -561,5 +561,5 @@ void Window::getPrayerTimes()
     midnight->setText(temp);
     temp = sunset->text();
     temp.append(QString::fromStdString(result["data"]["timings"]["Sunset"].get<std::string>()));
-    midnight->setText(temp);
+    sunset->setText(temp);
 }

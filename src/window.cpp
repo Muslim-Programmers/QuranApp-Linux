@@ -448,7 +448,7 @@ void Window::setDarkMode()
 
 void Window::showPrayerTimes()
 {
-    PayerTimeWidget = new QWidget;
+    PrayerTimeWidget = new QWidget;
     QGridLayout *Layout = new QGridLayout;
     QFile f("/opt/qapp/resources/qdarkstyle/style.qss");
     f.open(QFile::ReadOnly | QFile::Text);

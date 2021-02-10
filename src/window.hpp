@@ -64,6 +64,7 @@ class Window : public QMainWindow , public CURLParser
         QLineEdit *Country;
         QLineEdit *City;
         QPushButton *Show;
+        QWidget *PrayerTimeWidget;
         void getSurah(std::string surah_url);
         void getTranslation(std::string translation_url);
         std::string getEdition(std::string identifier);

@@ -448,13 +448,9 @@ void Window::setDarkMode()
 
 void Window::showPrayerTimes()
 {
-    QWidget *widget = new QWidget;
+    PayerTimeWidget = new QWidget;
     QGridLayout *Layout = new QGridLayout;
-    this->url = "https://ipinfo.io/country";
-    std::string country = curl_process();
-    this->url = "https://ipinfo.io/city";
-    std::string city = curl_process(); 
-    QFile f(":qdarkstyle/style.qss");
+    QFile f("/opt/qapp/resources/qdarkstyle/style.qss");
     f.open(QFile::ReadOnly | QFile::Text);
     QTextStream ts(&f);
     QFont timeFont("Arial", 18, QFont::Bold);
@@ -502,14 +498,14 @@ void Window::showPrayerTimes()
     Layout->addWidget(isha, 5, 0, 0);
     Layout->addWidget(sunset, 5, 1, 0);
     Layout->addWidget(midnight, 5, 2, 0);
-    widget->setLayout(Layout);
-    widget->setWindowTitle("Prayer Times");
-    widget->setMinimumSize(500, 400);
+    PrayerTimeWidget->setLayout(Layout);
+    PrayerTimeWidget->setWindowTitle("Prayer Times");
+    PrayerTimeWidget->setMinimumSize(500, 400);
     if(dark_mode_enabled)
-        widget->setStyleSheet(ts.readAll());
+        PrayerTimeWidget->setStyleSheet(ts.readAll());
     else
-        widget->setStyleSheet("");
-    widget->show();
+        PrayerTimeWidget->setStyleSheet("");
+    PrayerTimeWidget->show();
     connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
     connect(Show, SIGNAL(clicked()), this, SLOT(getPrayerTimes()));
     timer->start(1000);
@@ -532,34 +528,44 @@ void Window::getPrayerTimes()
     std::string country = Country->text().toStdString();
     std::string city = City->text().toStdString();
     apiurl.append(city + "&country=" + country + "&method=4");
+    for(int i=0;apiurl[i] != '\0';i++)
+    {
+        if(apiurl[i] == ' ')
+            apiurl[i] = '%';
+    }
     QString temp;
     this->url = apiurl;
-    json result = json::parse(curl_process());
-    temp = imsak->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Imsak"].get<std::string>()));
-    imsak->setText(temp);
-    temp = fajr->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Fajr"].get<std::string>()));
-    fajr->setText(temp);
-    temp = sunrise->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Sunrise"].get<std::string>()));
-    sunrise->setText(temp);
-    temp = zuhr->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Dhuhr"].get<std::string>()));
-    zuhr->setText(temp);
-    temp = asr->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Asr"].get<std::string>()));
-    asr->setText(temp);
-    temp = maghrib->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Maghrib"].get<std::string>()));
-    maghrib->setText(temp);
-    temp = isha->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Isha"].get<std::string>()));
-    isha->setText(temp);
-    temp = midnight->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Midnight"].get<std::string>()));
-    midnight->setText(temp);
-    temp = sunset->text();
-    temp.append(QString::fromStdString(result["data"]["timings"]["Sunset"].get<std::string>()));
-    sunset->setText(temp);
+    try{
+        json result = json::parse(curl_process());
+        temp = "Imsak: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Imsak"].get<std::string>()));
+        imsak->setText(temp);
+        temp = "Fajr: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Fajr"].get<std::string>()));
+        fajr->setText(temp);
+        temp = "Sunrise: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Sunrise"].get<std::string>()));
+        sunrise->setText(temp);
+        temp = "Zuhr: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Dhuhr"].get<std::string>()));
+        zuhr->setText(temp);
+        temp = "Asr: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Asr"].get<std::string>()));
+        asr->setText(temp);
+        temp = "Maghrib: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Maghrib"].get<std::string>()));
+        maghrib->setText(temp);
+        temp = "Isha: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Isha"].get<std::string>()));
+        isha->setText(temp);
+        temp = "Midnight: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Midnight"].get<std::string>()));
+        midnight->setText(temp);
+        temp = "Sunset: ";
+        temp.append(QString::fromStdString(result["data"]["timings"]["Sunset"].get<std::string>()));
+        sunset->setText(temp);
+    } catch(nlohmann::json::type_error &err) {
+        QMessageBox::critical(PrayerTimeWidget, "Error", "Invalid Country or City. Please Enter a valid location");
+        
+    }
 }

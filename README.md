@@ -13,9 +13,12 @@ Quran streaming only available in CLI mode now. Open terminal and type `qapp --h
 
 This Project uses [nlohmann json](https://github.com/nlohmann/json) for json parsing .
 
-![shot2](https://user-images.githubusercontent.com/77830098/105571013-b9375c00-5d72-11eb-9da7-67d1e7384796.png)
-![shot3](https://user-images.githubusercontent.com/77830098/105571016-bd637980-5d72-11eb-86a2-bd70acb45954.png)
+[Join Our Discord Server](https://discord.gg/7cnWVc8qgb)
 
+**Screenshots**
+
+![Capture](https://user-images.githubusercontent.com/77830098/107389136-8637eb00-6b1c-11eb-8450-880c250b0bf2.PNG)
+![Capture3](https://user-images.githubusercontent.com/77830098/107389156-8c2dcc00-6b1c-11eb-9b14-e6ed234611fb.PNG)
 
 **Dependencies**
 
@@ -36,3 +39,5 @@ This Project uses [nlohmann json](https://github.com/nlohmann/json) for json par
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`
+
+Windows and Ubuntu users can grab prebuilt binaries from releases page.

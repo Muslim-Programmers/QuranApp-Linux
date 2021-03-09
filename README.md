@@ -15,6 +15,8 @@ This Project uses [nlohmann json](https://github.com/nlohmann/json) for json par
 
 [Join Our Discord Server](https://discord.gg/7cnWVc8qgb)
 
+Windows Repo : https://github.com/Muslim-Programmers/QuranApp-Windows
+
 **Screenshots**
 
 ![Capture](https://user-images.githubusercontent.com/77830098/107389136-8637eb00-6b1c-11eb-8450-880c250b0bf2.PNG)
@@ -40,4 +42,4 @@ This Project uses [nlohmann json](https://github.com/nlohmann/json) for json par
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`
 
-Windows and Ubuntu users can grab prebuilt binaries from releases page.
+Prebuilt binaries are available in releases page.

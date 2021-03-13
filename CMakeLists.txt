@@ -16,6 +16,8 @@ set(SRCS
     src/window.hpp
     src/audio_stream.hpp
     src/curl_parser.hpp
+    src/db_reader.cpp 
+    src/db_reader.hpp
     qdarkstyle/style.qrc
 )
 
@@ -27,4 +29,4 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 add_executable(qapp ${SRCS})
 
-target_link_libraries(qapp Qt5::Widgets mpg123 ao curl)
+target_link_libraries(qapp Qt5::Widgets mpg123 ao curl sqlite3)

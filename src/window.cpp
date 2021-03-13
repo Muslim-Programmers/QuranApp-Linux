@@ -53,7 +53,7 @@ Window::Window()
     MainLayout->addWidget(createTextBox());    // set TextBox
     MainWidget->setLayout(MainLayout);         // set Layout
     setCentralWidget(MainWidget);              // set Main Widget
-    setWindowTitle("Quran App");               // set Window Title
+    setWindowTitle("Quran app");               // set Window Title
     setMinimumWidth(800);                      // set Minimum Width of Window
     setMinimumHeight(600);                     // set Minimum Height of Window
     connect(surah, SIGNAL(currentTextChanged(QString)), this, SLOT(showSurah())); // Watch Changes in ComboBox surah
@@ -79,8 +79,8 @@ void Window::createMenu()
 QGroupBox *Window::createComboBox()
 {
     // Function to Configure ComboBox
-
-    std::vector<std::string>data = getMetadata();
+    QDBReader Database;
+    std::vector<std::string>data = Database.metadata();
     QGroupBox *group = new QGroupBox;      // GroupBox ( To Group Widgets )
     QHBoxLayout *layout = new QHBoxLayout; // Horizontal Layout
     surah = new QComboBox;      
@@ -110,279 +110,80 @@ QGroupBox *Window::createTextBox()
 {
     // Function to configure Text Box
 
-    std::string surah_url = "https://api.alquran.cloud/v1/surah/";
-    std::string translation_url = "https://api.alquran.cloud/v1/surah/";
-    surah_url.append(std::to_string(surah_number) + "/");
-    surah_url.append("quran-simple-enhanced");
-    translation_url.append(std::to_string(surah_number) + "/");
-    translation_url.append(edition);
     translation->setCurrentIndex(5);
     QGroupBox *group = new QGroupBox;
     QHBoxLayout *layout = new QHBoxLayout;
     show_surah = new QTextEdit;
     show_translation = new QTextEdit;
-    getSurah(surah_url);
-    getTranslation(translation_url);
+    getSurah("Al_Faatiha", "quran");
+    getTranslation("Al_Faatiha", "English");
     layout->addWidget(show_translation);
     layout->addWidget(show_surah);
     group->setLayout(layout);
     return group;
 }
 
-std::vector<std::string> Window::getMetadata()
+void Window::getSurah(std::string surah_name, std::string edition)
 {
-    // Function to retrieve the surah Names
-
-    std::vector<std::string>data;
-    this->url = "https://api.alquran.cloud/v1/meta";
-    try {
-        json metadata = json::parse(this->curl_process()); // Parse the JSON data
-        for(int i=0;i<114;i++)
-        {
-            data.push_back(metadata["data"]["surahs"]["references"][i]["englishName"]); 
-        }
-    } catch(nlohmann::json::type_error &err) {
-
-        // caught if any errors encountered during JSON parsing
-
-        QMessageBox::critical(this, "Error", "No Internet Connection , Please enable internet and restart the Application");
-    }
-    return data;
+    QDBReader Database;
+    std::vector<std::string> data;
+    std::vector<std::string> meta = Database.metadata();
+    show_surah->setText(QString::fromStdString(meta.at(surah_number)) + "\n");
+    QTextCursor cursor = show_surah->textCursor();
+    QTextBlockFormat textBlockFormat = cursor.blockFormat();
+    textBlockFormat.setAlignment(Qt::AlignCenter);              // Align Text to Center
+    cursor.mergeBlockFormat(textBlockFormat);
+    data = Database.content(Database.rep((char*)surah_name.c_str()), Database.getedition(edition));
+    for(auto str : data)
+        show_surah->append(QString::fromStdString(str) + "\n");
+    show_surah->selectAll();
+    show_surah->setFontPointSize(16); // set Font Size
+    show_surah->setTextCursor(cursor);
+    show_surah->setReadOnly(true);    // set Text Box Read Only
 }
 
-void Window::getSurah(std::string surah_url)
+void Window::getTranslation(std::string translation_name, std::string edition)
 {
-    
-    this->url = surah_url;
-    QVector<QString>parsed_data;
-    try {
-        json parse_surah = json::parse(curl_process());
-        int ayahs = parse_surah["data"]["numberOfAyahs"];
-        int count = 1;
-        show_surah->setText(QString::fromStdString(parse_surah["data"]["name"].get<std::string>()));
-        QTextCursor cursor = show_surah->textCursor();
-        QTextBlockFormat textBlockFormat = cursor.blockFormat();
-        textBlockFormat.setAlignment(Qt::AlignCenter);              // Align Text to Center
-        cursor.mergeBlockFormat(textBlockFormat);
-        for(int i=0;i<ayahs;i++)
-        {
-            parsed_data.push_back(QString::fromStdString(parse_surah["data"]["ayahs"][i]["text"].get<std::string>()));
-        }
-        for(QString ayah : parsed_data)
-        {
-            QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
-            show_surah->append(data + "\n");
-            count++;
-        }
-        show_surah->selectAll();
-        show_surah->setFontPointSize(16); // set Font Size
-        show_surah->setTextCursor(cursor);
-        show_surah->setReadOnly(true);    // set Text Box Read Only
-    } catch(nlohmann::json::type_error &err) {
-        show_surah->setText(" Please Enable Internet to use this application ");
-    }
-}
-
-void Window::getTranslation(std::string translation_url)
-{
-    this->url = translation_url;
-    QVector<QString>parsed_data;
-    try {
-
-        json parse_surah = json::parse(curl_process());
-        int ayahs = parse_surah["data"]["numberOfAyahs"];
-        int count = 1;
-        show_translation->setText(QString::fromStdString(parse_surah["data"]["englishName"].get<std::string>()));
-        QTextCursor cursor = show_translation->textCursor();
-        QTextBlockFormat textBlockFormat = cursor.blockFormat();
-        textBlockFormat.setAlignment(Qt::AlignCenter);
-        cursor.mergeBlockFormat(textBlockFormat);
-        for(int i=0;i<ayahs;i++)
-        {
-            parsed_data.push_back(QString::fromStdString(parse_surah["data"]["ayahs"][i]["text"].get<std::string>()));
-        }
-        for(QString ayah : parsed_data)
-        {
-            QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
-            show_translation->append(data + "\n");
-            count++;
-        }
-        show_translation->selectAll();
-        show_translation->setFontPointSize(16);
-        show_translation->setTextCursor(cursor);
-        show_translation->setReadOnly(true);
-    } catch(nlohmann::json::type_error &err) {
-        show_translation->setText(" Please Enable Internet to use this application ");
-    }
+    QDBReader Database;
+    std::vector<std::string> data;
+    std::vector<std::string> meta = Database.metadata();
+    show_translation->setText(QString::fromStdString(meta.at(surah_number)) + "\n");
+    QTextCursor cursor = show_translation->textCursor();
+    QTextBlockFormat textBlockFormat = cursor.blockFormat();
+    textBlockFormat.setAlignment(Qt::AlignCenter);
+    cursor.mergeBlockFormat(textBlockFormat);
+    data = Database.content(Database.rep((char*)translation_name.c_str()), Database.getedition(edition));
+    for(auto str : data)
+        show_translation->append(QString::fromStdString(str) + "\n");
+    show_translation->selectAll();
+    show_translation->setFontPointSize(16);
+    show_translation->setTextCursor(cursor);
+    show_translation->setReadOnly(true);
 }
 
 void Window::showSurah()
 {
-    std::string surah_url = "https://api.alquran.cloud/v1/surah/";
-    std::string translation_url = surah_url;
-    std::vector<std::string>data;
-    surah_number = surah->currentIndex() + 1;
-    surah_url.append(std::to_string(surah_number) + "/");
-    surah_url.append("quran-simple-enhanced");
-    edition = getEdition(translation->currentText().toStdString());
-    translation_url.append(std::to_string(surah_number) + "/");
-    translation_url.append(edition);
-    getSurah(surah_url);
-    getTranslation(translation_url);
+    QDBReader Database;
+    std::vector<std::string>data = Database.metadata();
+    surah_number = surah->currentIndex();
+    getSurah(data.at(surah_number), "quran");
+    getTranslation(data.at(surah_number), translation->currentText().toStdString());
 }
 
 void Window::showTranslation()
 {
-    std::string translation_url = "https://api.alquran.cloud/v1/surah/";
-    edition = getEdition(translation->currentText().toStdString());
-    translation_url.append(std::to_string(surah_number) + "/");
-    translation_url.append(edition);
-    getTranslation(translation_url);
-}
-
-std::string Window::getEdition(std::string identifier)
-{
-    if(identifier == "Albanian")
-    {
-        return "sq.ahmeti";
-    }
-    else if(identifier == "Azerbaijani")
-    {
-        return "az.mammadaliyev";
-    }
-    else if(identifier == "Bengali")
-    {
-        return "bn.bengali";
-    }
-    else if(identifier == "Czech")
-    {
-        return "cs.hrbek";
-    }
-    else if(identifier == "Dutch")
-    {
-        return "nl.keyzer";
-    }
-    else if(identifier == "English")
-    {
-        return "en.sahih";
-    }
-    else if(identifier == "Farsi")
-    {
-        return "fa.ayati";
-    }
-    else if(identifier == "French")
-    {
-        return "fr.hamidullah";
-    }
-    else if(identifier == "German")
-    {
-        return "de.aburida";
-    }
-    else if(identifier == "Hausa")
-    {
-        return "ha.gumi";
-    } 
-    else if(identifier == "Hindi")
-    {
-        return "hi.hindi";
-    }
-    else if(identifier == "Indonesian")
-    {
-        return "id.indonesian";
-    }
-    else if(identifier == "Japanese")
-    {
-        return "ja.japanese";
-    }
-    else if(identifier == "Korean")
-    {
-        return "ko.korean";
-    }
-    else if(identifier == "Kurdish")
-    {
-        return "ku.asan";
-    }
-    else if(identifier == "Malayalam")
-    {
-        return "ml.abdulhameed";
-    }
-    else if(identifier == "Maldivian")
-    {
-        return "dv.divehi";   
-    }
-    else if(identifier == "Norwegian")
-    {
-        return "no.berg";
-    }
-    else if(identifier == "Polish")
-    {
-        return "pl.bielawskiego";
-    }
-    else if(identifier == "Portuguese")
-    {
-        return "pt.elhayek";
-    }
-    else if(identifier == "Sindhi")
-    {
-        return "sd.amroti";
-    }
-    else if(identifier == "Spanish")
-    {
-        return "es.cortes";
-    }
-    else if(identifier == "Swedish")
-    {
-        return "sv.bernstorm";
-    }
-    else if(identifier == "Swahili")
-    {
-        return "sw.barwani";
-    }
-
-    else if(identifier == "Romanian")
-    {
-        return "ro.grigore";
-    }
-    else if(identifier == "Russian")
-    {
-        return "ru.kuliev";
-    }
-    else if(identifier == "Tamil")
-    {
-        return "ta.tamil";
-    }
-    else if(identifier == "Tajik")
-    {
-        return "tg.ayati";
-    }
-    else if(identifier == "Thai")
-    {
-        return "th.thai";
-    }
-    else if(identifier == "Turkish")
-    {
-        return "tr.ates";
-    }
-    else if(identifier == "Uyghur")
-    {
-        return "ug.saleh";
-    }
-    else if(identifier == "Urdu")
-    {
-        return "ur.ahmedali";
-    }
-    else if (identifier == "Uzbek")
-    {
-        return "uz.sodik";
-    }
+    QDBReader Database;
+    std::vector<std::string>data = Database.metadata();
+    surah_number = surah->currentIndex();
+    getTranslation(data.at(surah_number), translation->currentText().toStdString());
 }
 
 void Window::showAbout()
 {
     QWidget *AboutWindow = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
-    QPixmap pixmap("/opt/qapp/resources/qapp-198x198.png");
-    QFile f("/opt/qapp/resources/qdarkstyle/style.qss");
+    QPixmap pixmap("resources/qapp-198x198.png");
+    QFile f(":qdarkstyle/style.qss");
     f.open(QFile::ReadOnly | QFile::Text);
     QTextStream ts(&f);
     QFont hfont("Arial", 15, QFont::Bold);
@@ -431,7 +232,7 @@ void Window::showAbout()
 
 void Window::setDarkMode()
 {
-    QFile f("/opt/qapp/resources/qdarkstyle/style.qss"); 
+    QFile f(":qdarkstyle/style.qss"); 
     f.open(QFile::ReadOnly | QFile::Text); // open window stylesheet
     QTextStream ts(&f); 
     if(dark_mode_enabled)
@@ -449,8 +250,8 @@ void Window::setDarkMode()
 void Window::showPrayerTimes()
 {
     PrayerTimeWidget = new QWidget;
-    QGridLayout *Layout = new QGridLayout;
-    QFile f("/opt/qapp/resources/qdarkstyle/style.qss");
+    QGridLayout *Layout = new QGridLayout; 
+    QFile f(":qdarkstyle/style.qss");
     f.open(QFile::ReadOnly | QFile::Text);
     QTextStream ts(&f);
     QFont timeFont("Arial", 18, QFont::Bold);
@@ -500,7 +301,7 @@ void Window::showPrayerTimes()
     Layout->addWidget(midnight, 5, 2, 0);
     PrayerTimeWidget->setLayout(Layout);
     PrayerTimeWidget->setWindowTitle("Prayer Times");
-    PrayerTimeWidget->setMinimumSize(500, 400);
+    PrayerTimeWidget->setMinimumSize(600, 400);
     if(dark_mode_enabled)
         PrayerTimeWidget->setStyleSheet(ts.readAll());
     else
@@ -565,7 +366,7 @@ void Window::getPrayerTimes()
         temp.append(QString::fromStdString(result["data"]["timings"]["Sunset"].get<std::string>()));
         sunset->setText(temp);
     } catch(nlohmann::json::type_error &err) {
-        QMessageBox::critical(PrayerTimeWidget, "Error", "Invalid Country or City. Please Enter a valid location");
+        QMessageBox::critical(PrayerTimeWidget, "Error", "Make sure you have connected to internet and entered a valid location");
         
     }
 }

@@ -27,6 +27,7 @@
 #include <QDate>
 #include <QGridLayout>
 #include "curl_parser.hpp"
+#include "db_reader.hpp"
 
 class Window : public QMainWindow , public CURLParser
 {
@@ -34,13 +35,11 @@ class Window : public QMainWindow , public CURLParser
     public:
         Window();
     private:
-        int surah_number = 1;
+        int surah_number = 0;
         bool dark_mode_enabled = false;
-        std::string edition = "en.sahih";
         QGroupBox *createComboBox();
         QGroupBox *createTextBox();
         void createMenu();
-        std::vector<std::string> getMetadata();
         QComboBox *surah;
         QComboBox *translation;
         QTextEdit *show_surah;
@@ -65,9 +64,8 @@ class Window : public QMainWindow , public CURLParser
         QLineEdit *City;
         QPushButton *Show;
         QWidget *PrayerTimeWidget;
-        void getSurah(std::string surah_url);
-        void getTranslation(std::string translation_url);
-        std::string getEdition(std::string identifier);
+        void getSurah(std::string, std::string);
+        void getTranslation(std::string, std::string);
     private slots:
         void showSurah();
         void showTranslation();

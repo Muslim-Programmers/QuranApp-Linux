@@ -4,6 +4,7 @@ if [ -f "$FILE" ]; then
 	sudo cp ./build/qapp /usr/bin/
 	sudo cp -r resources/ /opt/qapp/
 	sudo cp -r qdarkstyle/ /opt/qapp/resources/
+	sudo cp -r database/ /opt/qapp/
 	sudo cp qapp.desktop /usr/share/applications/ 
 	sudo echo "Successfully Installed"
 	sudo echo "Open Quran app from Application Menu or type qapp --h "

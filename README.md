@@ -29,6 +29,7 @@ Windows Repo : https://github.com/Muslim-Programmers/QuranApp-Windows
 * Qt5 = `sudo apt install qt5-default`
 * libmpg123 installation = `sudo apt install libmpg123-dev libmpg123-0`
 * libao installation = `sudo apt install libao-dev libao4`
+* libsqlite3 installation = `sudo apt install libsqlite3-dev`
 
 **Installation**
 

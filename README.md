@@ -24,7 +24,7 @@ Windows Repo : https://github.com/Muslim-Programmers/QuranApp-Windows
 
 **Dependencies**
 
-`libcurl4-openssl-dev , qt5-default, nlohmann json, libpmg123-dev, libao-dev`
+`libcurl4-openssl-dev , qt5-default, nlohmann json, libpmg123-dev, libao-dev, libsqlite3-dev`
 * libcurl installation = `sudo apt install libcurl4-openssl-dev`
 * Qt5 = `sudo apt install qt5-default`
 * libmpg123 installation = `sudo apt install libmpg123-dev libmpg123-0`

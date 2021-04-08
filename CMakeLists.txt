@@ -11,10 +11,8 @@ set(CMAKE_AUTOUIC ON)
 set(SRCS
     src/main.cpp
     src/window.cpp
-    src/audio_stream.cpp
     src/curl_parser.cpp
     src/window.hpp
-    src/audio_stream.hpp
     src/curl_parser.hpp
     src/db_reader.cpp 
     src/db_reader.hpp
@@ -25,8 +23,8 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Multimedia REQUIRED)
 
 add_executable(qapp ${SRCS})
 
-target_link_libraries(qapp Qt5::Widgets mpg123 ao curl sqlite3)
+target_link_libraries(qapp Qt5::Widgets Qt5::Multimedia mpg123 ao curl sqlite3)

@@ -9,8 +9,6 @@ Quran app is an easy to use quran reader with support for translation in multipl
 
 User can Access Prayer Times from Menu->Prayer Times.
 
-Quran streaming only available in CLI mode now. Open terminal and type `qapp --h` to show help menu. 
-
 This Project uses [nlohmann json](https://github.com/nlohmann/json) for json parsing .
 
 [Join Our Discord Server](https://discord.gg/7cnWVc8qgb)

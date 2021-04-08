@@ -50,14 +50,18 @@ Window::Window()
     createMenu();                              // Call createMenu() to configure MenuBar
     setMenuBar(menuBar);                       // set MenuBar
     MainLayout->addWidget(createComboBox());   // set ComboBox
+    MainLayout->addWidget(createPlayerUi());   // set PlayerUi
     MainLayout->addWidget(createTextBox());    // set TextBox
     MainWidget->setLayout(MainLayout);         // set Layout
     setCentralWidget(MainWidget);              // set Main Widget
-    setWindowTitle("Quran app");               // set Window Title
+    setWindowTitle("Quran App");               // set Window Title
     setMinimumWidth(800);                      // set Minimum Width of Window
     setMinimumHeight(600);                     // set Minimum Height of Window
     connect(surah, SIGNAL(currentTextChanged(QString)), this, SLOT(showSurah())); // Watch Changes in ComboBox surah
     connect(translation, SIGNAL(currentTextChanged(QString)), this, SLOT(showTranslation())); // Watch Changes in ComboBox translation
+    connect(play, SIGNAL(clicked()), this, SLOT(set_play()));
+    connect(pause, SIGNAL(clicked()), this, SLOT(set_pause()));
+    connect(stop, SIGNAL(clicked()), this, SLOT(set_stop()));
 }
 
 void Window::createMenu()
@@ -67,9 +71,9 @@ void Window::createMenu()
     menuBar = new QMenuBar;
     Menu = new QMenu(tr("Menu"), this);
     darkmode = Menu->addAction(tr("Dark Mode")); // Add Dark Mode Menu Entry
+    darkmode->setCheckable(true);
     prayertimes = Menu->addAction(tr("Prayer Times"));
     about = Menu->addAction(tr("About"));        // Add About Menu Entry
-    darkmode->setCheckable(true);
     menuBar->addMenu(Menu);
     connect(about, SIGNAL(triggered()), this, SLOT(showAbout())); 
     connect(darkmode, SIGNAL(triggered()), this, SLOT(setDarkMode()));
@@ -123,6 +127,52 @@ QGroupBox *Window::createTextBox()
     return group;
 }
 
+QGroupBox *Window::createPlayerUi()
+{
+    // create Media Player UI
+
+    QGroupBox *PlayerBox = new QGroupBox(tr("Play Surah"));
+    QHBoxLayout *PlayerLayout = new QHBoxLayout;
+    play = new QPushButton("Play");
+    pause = new QPushButton("Pause");
+    stop = new QPushButton("Stop");
+    player = new QMediaPlayer;
+    player->setMedia(QuranUrl);
+    PlayerLayout->addWidget(play);
+    PlayerLayout->addWidget(pause);
+    PlayerLayout->addWidget(stop);
+    PlayerBox->setLayout(PlayerLayout);
+    return PlayerBox;
+
+}
+
+
+QUrl Window::getQuranUrl(int surah_number)
+{
+    QUrl qurl;
+    std::string QuranUrl = "https://server8.mp3quran.net/afs/";
+    if(surah_number >= 1 && surah_number <= 9)
+    {
+        QuranUrl.append("00");
+        QuranUrl.append(std::to_string(surah_number));
+        QuranUrl.append(".mp3");
+    }
+    else if(surah_number >= 10 && surah_number <= 99)
+    {
+        QuranUrl.append("0");
+        QuranUrl.append(std::to_string(surah_number));
+        QuranUrl.append(".mp3");
+    }
+    else if(surah_number >= 100 && surah_number <= 114)
+    {
+        QuranUrl.append(std::to_string(surah_number));
+        QuranUrl.append(".mp3");
+    }
+
+    qurl = QuranUrl.c_str();
+    return qurl;
+}
+
 void Window::getSurah(std::string surah_name, std::string edition)
 {
     QDBReader Database;
@@ -161,6 +211,7 @@ void Window::getTranslation(std::string translation_name, std::string edition)
     show_translation->setReadOnly(true);
 }
 
+
 void Window::showSurah()
 {
     QDBReader Database;
@@ -168,6 +219,9 @@ void Window::showSurah()
     surah_number = surah->currentIndex();
     getSurah(data.at(surah_number), "quran");
     getTranslation(data.at(surah_number), translation->currentText().toStdString());
+    QuranUrl = getQuranUrl(surah->currentIndex()+1);
+    player->stop();
+    player->setMedia(QuranUrl);
 }
 
 void Window::showTranslation()
@@ -194,8 +248,9 @@ void Window::showAbout()
     QLabel *header = new QLabel("A Project by Muslim Programmers Community");
     QLabel *Discord = new QLabel("Discord : discord.gg/7cnWVc8qgb");
     QLabel *Instagram = new QLabel("Instagram : @muslimpgmrs");
-    QLabel *Contributers = new QLabel("Contributers : Nashid , Jonas , Bilal");
-    QLabel *footer = new QLabel("www.muslimprogrammers.com");
+    QLabel *Contributers = new QLabel("Contributers : Nashid , Jonas");
+    QLabel *footer = new QLabel("https://www.muslimprogrammers.com");
+    QLabel *version = new QLabel("Version 1.4 beta");
     icon->setPixmap(pixmap);
     icon->setAlignment(Qt::AlignCenter);
     icon->setGeometry(QRect(312, 454, 21, 20));
@@ -214,12 +269,15 @@ void Window::showAbout()
     footer->setFont(ffont);
     footer->setAlignment(Qt::AlignCenter);
     footer->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    version->setFont(nfont);
+    version->setAlignment(Qt::AlignCenter);
     layout->addWidget(icon);
     layout->addWidget(header);
     layout->addWidget(Discord);
     layout->addWidget(Instagram);
     layout->addWidget(Contributers);
     layout->addWidget(footer);
+    layout->addWidget(version);
     AboutWindow->setLayout(layout);
     AboutWindow->setMinimumSize(602,443);
     AboutWindow->setWindowTitle("About");
@@ -366,7 +424,36 @@ void Window::getPrayerTimes()
         temp.append(QString::fromStdString(result["data"]["timings"]["Sunset"].get<std::string>()));
         sunset->setText(temp);
     } catch(nlohmann::json::type_error &err) {
-        QMessageBox::critical(PrayerTimeWidget, "Error", "Make sure you have connected to internet and entered a valid location");
-        
+        QMessageBox::critical(PrayerTimeWidget, "Error", "Make sure you have connected to internet and entered a valid location , or maybe the API is down");
+        std::cerr << err.what() << std::endl;
+    }
+}
+
+void Window::set_play()
+{
+    if(!quran_is_playing || quran_is_paused)
+    {
+        player->play();
+        quran_is_playing = true;
+    }
+}
+
+void Window::set_pause()
+{
+    if(quran_is_playing)
+    {
+        player->pause();
+        quran_is_paused = true;
+        quran_is_playing = false;
+    }
+}
+
+void Window::set_stop()
+{
+    if(quran_is_playing || quran_is_paused)
+    {
+        player->stop();
+        quran_is_playing = false;
+        quran_is_paused = false;
     }
 }

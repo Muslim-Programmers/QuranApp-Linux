@@ -26,6 +26,9 @@
 #include <QTime>
 #include <QDate>
 #include <QGridLayout>
+#include <QUrl>
+#include <QtMultimedia/QtMultimedia>
+#include <QProgressBar>
 #include "curl_parser.hpp"
 #include "db_reader.hpp"
 
@@ -37,8 +40,12 @@ class Window : public QMainWindow , public CURLParser
     private:
         int surah_number = 0;
         bool dark_mode_enabled = false;
+        bool quran_is_playing = false;
+        bool quran_is_paused = true;
+        QUrl QuranUrl = QUrl("https://server8.mp3quran.net/afs/001.mp3");
         QGroupBox *createComboBox();
         QGroupBox *createTextBox();
+        QGroupBox *createPlayerUi();
         void createMenu();
         QComboBox *surah;
         QComboBox *translation;
@@ -64,8 +71,14 @@ class Window : public QMainWindow , public CURLParser
         QLineEdit *City;
         QPushButton *Show;
         QWidget *PrayerTimeWidget;
+        QWidget *MediaPlayerWidget;
+        QMediaPlayer *player;
+        QPushButton *play;
+        QPushButton *pause;
+        QPushButton *stop;
         void getSurah(std::string, std::string);
         void getTranslation(std::string, std::string);
+        QUrl getQuranUrl(int surah_number);
     private slots:
         void showSurah();
         void showTranslation();
@@ -74,6 +87,9 @@ class Window : public QMainWindow , public CURLParser
         void showTime();
         void showPrayerTimes();
         void getPrayerTimes();
+        void set_play();
+        void set_pause();
+        void set_stop();
 };
 
 #endif

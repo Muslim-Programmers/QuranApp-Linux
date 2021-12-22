@@ -11,8 +11,6 @@ User can Access Prayer Times from Menu->Prayer Times.
 
 This Project uses [nlohmann json](https://github.com/nlohmann/json) for json parsing .
 
-[Join Our Discord Server](https://discord.gg/7cnWVc8qgb)
-
 Windows Repo : https://github.com/Muslim-Programmers/QuranApp-Windows
 
 **Screenshots**

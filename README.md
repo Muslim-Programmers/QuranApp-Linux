@@ -15,8 +15,8 @@ Windows Repo : https://github.com/Muslim-Programmers/QuranApp-Windows
 
 **Screenshots**
 
-![Capture](https://user-images.githubusercontent.com/77830098/107389136-8637eb00-6b1c-11eb-8450-880c250b0bf2.PNG)
-![Capture3](https://user-images.githubusercontent.com/77830098/107389156-8c2dcc00-6b1c-11eb-9b14-e6ed234611fb.PNG)
+![qapp1](https://user-images.githubusercontent.com/95064572/150300379-6c33af55-a0a3-4d37-a269-9ce5683cd888.png)
+![qapp2](https://user-images.githubusercontent.com/95064572/150300402-2d2fd7aa-f465-48f9-86bb-a593ca1b4dd6.png)
 
 **Dependencies**
 

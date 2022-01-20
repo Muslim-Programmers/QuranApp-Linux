@@ -14,7 +14,7 @@ int QDBReader::callback(void *data, int argc, char *argv[], char *colname[])
     return 0;
 }
 
-char *QDBReader::rep(char *str)
+char *QDBReader::replaceStr(char *str)
 {
     char *dat = str;
     for (int i = 0; dat[i] != '\0'; i++)

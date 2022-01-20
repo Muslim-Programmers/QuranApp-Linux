@@ -16,7 +16,6 @@ set(SRCS
     src/curl_parser.hpp
     src/db_reader.cpp 
     src/db_reader.hpp
-    qdarkstyle/style.qrc
 )
 
 if(CMAKE_VERSION VERSION_LESS "3.7.0")
@@ -27,4 +26,4 @@ find_package(Qt5 COMPONENTS Widgets Multimedia REQUIRED)
 
 add_executable(qapp ${SRCS})
 
-target_link_libraries(qapp Qt5::Widgets Qt5::Multimedia mpg123 ao curl sqlite3)
+target_link_libraries(qapp Qt5::Widgets Qt5::Multimedia curl sqlite3)

@@ -12,7 +12,7 @@ public:
     std::vector<std::string> content(std::string , std::string);
     std::vector<std::string> metadata();
     std::string getedition(std::string);
-    char *rep(char *str);
+    char *replaceStr(char *str);
 };
 
 #endif // DB_READER_HPP

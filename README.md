@@ -20,16 +20,18 @@ Windows Repo : https://github.com/Muslim-Programmers/QuranApp-Windows
 
 **Dependencies**
 
+**Debian** Derivatives :-
+
 `libcurl4-openssl-dev , qt5 , nlohmann json, libsqlite3-dev`
 * libcurl installation = `sudo apt install libcurl4-openssl-dev`
-* Qt5 = `sudo apt install qt5-default qtmultimedia5-dev libqt5multimedia5-plugins`
+* Qt5 = `sudo apt install qtbase5-dev qtmultimedia5-dev libqt5multimedia5-plugins`
 * libsqlite3 installation = `sudo apt install libsqlite3-dev`
 
 **Installation**
 
 1. Install Dependencies
 2. clone the repo and cd to repo folder
-3. `mkdir build && cmake ..`
+3. `mkdir build && cd build && cmake ..`
 4. run `make` , it will compile the program
 5. run `cd .. && sudo ./install.sh`
 6. Open the app from application menu 
